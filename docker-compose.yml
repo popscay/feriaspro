@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16
+    container_name: feriaspro-db
+    environment:
+      POSTGRES_DB: feriaspro
+      POSTGRES_USER: feriaspro
+      POSTGRES_PASSWORD: feriaspro
+    ports:
+      - "5432:5432"
+    volumes:
+      - feriaspro_db_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    container_name: feriaspro-backend
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: feriaspro-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  feriaspro_db_data:
